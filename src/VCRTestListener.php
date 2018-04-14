@@ -7,6 +7,7 @@ use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestListener;
 use PHPUnit\Framework\TestSuite;
 use PHPUnit\Framework\Warning;
+use Throwable;
 use VCR\VCR;
 
 /**
@@ -34,12 +35,12 @@ class VCRTestListener implements TestListener
     /**
      * @var array
      */
-    protected $runs = array();
+    protected $runs = [];
 
     /**
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * @var int
@@ -51,75 +52,75 @@ class VCRTestListener implements TestListener
      *
      * @param array $options
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = [])
     {
     }
 
     /**
      * An error occurred.
      *
-     * @param Test      $test
-     * @param Exception $e
-     * @param float     $time
+     * @param Test $test
+     * @param Throwable $e
+     * @param float $time
      */
-    public function addError(Test $test, \Exception $e, $time)
+    public function addError(Test $test, Throwable $e, float $time) : void
     {
     }
 
     /**
      * A warning occurred.
      *
-     * @param Test    $test
+     * @param Test $test
      * @param Warning $e
-     * @param float   $time
+     * @param float $time
      *
      * @since Method available since Release 5.1.0
      */
-    public function addWarning(Test $test, Warning $e, $time)
+    public function addWarning(Test $test, Warning $e, float $time) : void
     {
     }
 
     /**
      * A failure occurred.
      *
-     * @param Test                 $test
+     * @param Test $test
      * @param AssertionFailedError $e
-     * @param float                $time
+     * @param float $time
      */
-    public function addFailure(Test $test, AssertionFailedError $e, $time)
+    public function addFailure(Test $test, AssertionFailedError $e, float $time) : void
     {
     }
 
     /**
      * Incomplete test.
      *
-     * @param Test       $test
-     * @param \Exception $e
-     * @param float      $time
+     * @param Test $test
+     * @param Throwable $e
+     * @param float $time
      */
-    public function addIncompleteTest(Test $test, \Exception $e, $time)
+    public function addIncompleteTest(Test $test, Throwable $e, float $time) : void
     {
     }
 
     /**
      * Skipped test.
      *
-     * @param Test       $test
-     * @param \Exception $e
-     * @param float      $time
+     * @param Test $test
+     * @param Throwable $e
+     * @param float $time
      */
-    public function addSkippedTest(Test $test, \Exception $e, $time)
+    public function addSkippedTest(Test $test, Throwable $e, float $time) : void
     {
     }
 
     /**
      * Risky test.
      *
-     * @param Test       $test
-     * @param \Exception $e
-     * @param float      $time
+     * @param Test $test
+     * @param Throwable $e
+     * @param float $time
      */
-    public function addRiskyTest(Test $test, \Exception $e, $time)
+    public function addRiskyTest(Test $test, Throwable $e, float $time) : void
     {
     }
 
@@ -128,9 +129,10 @@ class VCRTestListener implements TestListener
      *
      * @param Test $test
      *
-     * @return bool|null
+     * @return void
+     * @throws \ReflectionException
      */
-    public function startTest(Test $test)
+    public function startTest(Test $test) : void
     {
         $class = get_class($test);
         $method = $test->getName(false);
@@ -152,7 +154,7 @@ class VCRTestListener implements TestListener
         }
 
         if (empty($cassetteName)) {
-            return true;
+            return;
         }
 
         VCR::turnOn();
@@ -161,7 +163,7 @@ class VCRTestListener implements TestListener
 
     private static function parseDocBlock($docBlock, $tag)
     {
-        $matches = array();
+        $matches = [];
 
         if (empty($docBlock)) {
             return $matches;
@@ -171,7 +173,7 @@ class VCRTestListener implements TestListener
         preg_match_all($regex, $docBlock, $matches);
 
         if (empty($matches[1])) {
-            return array();
+            return [];
         }
 
         // Removed extra index
@@ -188,10 +190,10 @@ class VCRTestListener implements TestListener
     /**
      * A test ended.
      *
-     * @param Test  $test
+     * @param Test $test
      * @param float $time
      */
-    public function endTest(Test $test, $time)
+    public function endTest(Test $test, float $time) : void
     {
         VCR::turnOff();
     }
@@ -201,7 +203,7 @@ class VCRTestListener implements TestListener
      *
      * @param TestSuite $suite
      */
-    public function startTestSuite(TestSuite $suite)
+    public function startTestSuite(TestSuite $suite) : void
     {
     }
 
@@ -210,7 +212,7 @@ class VCRTestListener implements TestListener
      *
      * @param TestSuite $suite
      */
-    public function endTestSuite(TestSuite $suite)
+    public function endTestSuite(TestSuite $suite) : void
     {
     }
 }
